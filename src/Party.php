@@ -43,6 +43,11 @@ class Party implements XmlSerializable{
     private $legalEntity;
 
     /**
+     * @var Langage
+     */
+    private $language;
+
+    /**
      * @return mixed
      */
     public function getName() {
