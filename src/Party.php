@@ -162,6 +162,11 @@ class Party implements XmlSerializable{
         return $this;
     }
 
+    public function setLanguage($language) {
+        $this->language = $language;
+        return $this;
+    }
+
     function xmlSerialize(Writer $writer) {
         $writer->write([
             Schema::CAC.'PartyName' => [
@@ -170,14 +175,22 @@ class Party implements XmlSerializable{
             Schema::CAC.'PostalAddress' => $this->postalAddress
         ]);
 
-	    if($this->taxScheme){
-		    $writer->write([
-			    Schema::CAC.'PartyTaxScheme' => [
-				    Schema::CBC.'CompanyID' => $this->companyId,
-				    Schema::CAC.'TaxScheme' => [Schema::CBC.'ID' => $this->taxScheme]
-			    ],
-		    ]);
-	    }
+        if ($this->language) {
+            $writer->write([
+                Schema::CAC.'Language' => [
+                    Schema::CBC.'ID' => $this->language
+                ],
+            ]);
+        }
+
+        if($this->taxScheme){
+            $writer->write([
+                Schema::CAC.'PartyTaxScheme' => [
+                    Schema::CBC.'CompanyID' => $this->companyId,
+                    Schema::CAC.'TaxScheme' => [Schema::CBC.'ID' => $this->taxScheme]
+                ],
+            ]);
+        }
 
         if($this->physicalLocation){
             $writer->write([
