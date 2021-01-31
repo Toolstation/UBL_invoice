@@ -73,19 +73,19 @@ class Contact implements XmlSerializable {
      */
     function xmlSerialize(Writer $writer) {
         // TODO: Implement xmlSerialize() method.
-        if($this->telephone !== null) {
+        if(!empty($this->telephone)) {
             $writer->write([
                 Schema::CBC . 'Telephone' => $this->telephone
             ]);
         }
 
-        if($this->telefax !== null) {
+        if(!empty($this->telefax)) {
             $writer->write([
                 Schema::CBC . 'Telefax' => $this->telefax
             ]);
         }
 
-        if($this->electronicMail !== null) {
+        if(!empty($this->electronicMail)) {
             $writer->write([
                 Schema::CBC . 'ElectronicMail' => $this->electronicMail
             ]);

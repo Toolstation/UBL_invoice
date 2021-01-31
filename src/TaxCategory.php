@@ -110,7 +110,7 @@ class TaxCategory implements XmlSerializable {
         $writer->write([
             Schema::CBC.'ID' => $this->id,
             Schema::CBC.'Name' => $this->name,
-            Schema::CBC.'Percent' => $this->percent,
+            Schema::CBC.'Percent' => number_format($this->percent, 2, '.', '')
         ]);
 
         if($this->taxScheme != null){

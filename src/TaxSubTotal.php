@@ -21,6 +21,8 @@ class TaxSubTotal implements XmlSerializable {
      */
     private $taxCategory;
 
+    private $percent = 0;
+
     /**
      * @return mixed
      */
@@ -69,6 +71,11 @@ class TaxSubTotal implements XmlSerializable {
         return $this;
     }
 
+    public function setPercent($percent) {
+        $this->percent = $percent;
+        return $this;
+    }
+
 
     public function validate() {
         if ($this->taxableAmount === null) {
@@ -91,26 +98,33 @@ class TaxSubTotal implements XmlSerializable {
      */
     function xmlSerialize(Writer $writer) {
         $this->validate();
+        $nodes = [
+            [
+                'name' => Schema::CBC . 'TaxableAmount',
+                'value' => number_format($this->taxableAmount, 2, '.', ''),
+                'attributes' => [
+                    'currencyID' => Generator::$currencyID
+                ]
 
-        $writer->write([
-                [
-                    'name' => Schema::CBC . 'TaxableAmount',
-                    'value' => number_format($this->taxableAmount, 2, '.', ''),
-                    'attributes' => [
-                        'currencyID' => Generator::$currencyID
-                    ]
+            ],
+            [
+                'name' => Schema::CBC . 'TaxAmount',
+                'value' => number_format($this->taxAmount, 2, '.', ''),
+                'attributes' => [
+                    'currencyID' => Generator::$currencyID
+                ]
 
-                ],
-                [
-                    'name' => Schema::CBC . 'TaxAmount',
-                    'value' => number_format($this->taxAmount, 2, '.', ''),
-                    'attributes' => [
-                        'currencyID' => Generator::$currencyID
-                    ]
+            ],
+        ];
 
-                ],
-                Schema::CAC.'TaxCategory' => $this->taxCategory
-            ]
-        );
+        //if (!empty($this->percent)) {
+            $nodes[Schema::CBC . 'Percent'] = number_format($this->percent, 2, '.', '');
+        //}
+
+        if (!empty($this->taxCategory)) {
+            $nodes[Schema::CAC . 'TaxCategory'] = $this->taxCategory;
+        }
+
+        $writer->write($nodes);
     }
 }

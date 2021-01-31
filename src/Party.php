@@ -86,6 +86,7 @@ class Party implements XmlSerializable{
 	 */
 	public function setCompanyId($companyId) {
     	$this->companyId = $companyId;
+    	return $this;
 	}
 
 	/**
@@ -151,6 +152,16 @@ class Party implements XmlSerializable{
         return $this;
     }
 
+    public function setLegalCompanyId($legalCompanyId) {
+        $this->legalCompanyId = $legalCompanyId;
+        return $this;
+    }
+
+    public function setLegalRegistrationName($legalRegistrationName) {
+        $this->legalRegistrationName = $legalRegistrationName;
+        return $this;
+    }
+
     function xmlSerialize(Writer $writer) {
         $writer->write([
             Schema::CAC.'PartyName' => [
@@ -163,7 +174,7 @@ class Party implements XmlSerializable{
 		    $writer->write([
 			    Schema::CAC.'PartyTaxScheme' => [
 				    Schema::CBC.'CompanyID' => $this->companyId,
-				    Schema::CAC.'TaxScheme' => [Schema::CAC.'ID' => $this->taxScheme]
+				    Schema::CAC.'TaxScheme' => [Schema::CBC.'ID' => $this->taxScheme]
 			    ],
 		    ]);
 	    }
@@ -171,6 +182,12 @@ class Party implements XmlSerializable{
         if($this->physicalLocation){
             $writer->write([
                Schema::CAC.'PhysicalLocation' => [Schema::CAC.'Address' => $this->physicalLocation]
+            ]);
+        }
+
+        if($this->legalEntity){
+            $writer->write([
+                Schema::CAC.'PartyLegalEntity' => $this->legalEntity
             ]);
         }
 

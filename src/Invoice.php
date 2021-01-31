@@ -13,12 +13,20 @@ use Sabre\Xml\Writer;
 use Sabre\Xml\XmlSerializable;
 
 class Invoice implements XmlSerializable{
-    private $UBLVersionID = '2.0';
+
+    const UBL_VERSION = '2.0';
+    const UBL_CUSTOM_ID = '1.0';
+
+    /**
+     * @var string
+     */
+    private $profileId;
 
     /**
      * @var int
      */
     private $id;
+
     /**
      * @var bool
      */
@@ -28,45 +36,67 @@ class Invoice implements XmlSerializable{
      * @var \DateTime
      */
     private $issueDate;
+
     /**
      * @var string
      */
-
     private $invoiceTypeCode;
 
     /**
-     * @var AdditionalDocumentReference
+     * @var string
      */
-    private $additionalDocumentReference;
+    private $currencyCode;
 
     /**
      * @var Party
      */
     private $accountingSupplierParty;
+
     /**
      * @var Party
      */
     private $accountingCustomerParty;
+
     /**
      * @var TaxTotal
      */
     private $taxTotal;
+
     /**
      * @var LegalMonetaryTotal
      */
     private $legalMonetaryTotal;
+
     /**
      * @var InvoiceLine[]
      */
     private $invoiceLines;
+
     /**
      * @var AllowanceCharge[]
      */
     private $allowanceCharges;
 
+    /**
+     * @var string
+     */
+    private $receiverCustomerId;
+
+    private $paymentMeans;
+
+    private $orderReference;
+
+    private $paymentTerms;
+
+    private $note;
+
 
     function validate()
     {
+        if ($this->profileId === null) {
+            throw new \InvalidArgumentException('Missing profile id');
+        }
+
         if ($this->id === null) {
             throw new \InvalidArgumentException('Missing invoice id');
         }
@@ -81,6 +111,10 @@ class Invoice implements XmlSerializable{
 
         if ($this->invoiceTypeCode === null) {
             throw new \InvalidArgumentException('Missing invoice invoiceTypeCode');
+        }
+
+        if ($this->currencyCode === null) {
+            throw new \InvalidArgumentException('Missing currency code');
         }
 
         if ($this->accountingSupplierParty === null) {
@@ -108,15 +142,34 @@ class Invoice implements XmlSerializable{
         $this->validate();
 
         $writer->write([
-            $cbc . 'UBLVersionID' => $this->UBLVersionID,
-            $cbc . 'CustomizationID' => 'OIOUBL-2.01',
+            $cbc . 'UBLVersionID' => self::UBL_VERSION,
+            $cbc . 'CustomizationID' => self::UBL_CUSTOM_ID,
+            $cbc . 'ProfileID' => $this->profileId,
             $cbc . 'ID' => $this->id,
             $cbc . 'CopyIndicator' => $this->copyIndicator ? 'true' : 'false',
             $cbc . 'IssueDate' => $this->issueDate->format('Y-m-d'),
             $cbc . 'InvoiceTypeCode' => $this->invoiceTypeCode,
-            $cac . 'AdditionalDocumentReference' => $this->additionalDocumentReference,
+            $cbc . 'Note' => $this->note,
+            $cbc . 'DocumentCurrencyCode' => $this->currencyCode,
+            $cac . 'OrderReference' => [
+                $cbc . 'ID' => $this->orderReference
+            ],
+            /*
+            $cac . 'BillingReference' => [
+                $cac . 'InvoiceDocumentReference' => [
+                    $cbc . 'ID' => $this->orderReference
+                ]
+            ],
+            */
             $cac . 'AccountingSupplierParty' => [$cac . "Party" => $this->accountingSupplierParty],
-            $cac . 'AccountingCustomerParty' => [$cac . "Party" => $this->accountingCustomerParty],
+            $cac . 'AccountingCustomerParty' => [
+                $cbc . "SupplierAssignedAccountID" => $this->receiverCustomerId,
+                $cac . "Party" => $this->accountingCustomerParty
+            ],
+            $cac . 'PaymentMeans' => $this->paymentMeans,
+            $cac . 'PaymentTerms' => [
+                $cbc . 'Note' => $this->paymentTerms
+            ],
         ]);
 
         if ($this->allowanceCharges != null) {
@@ -200,6 +253,12 @@ class Invoice implements XmlSerializable{
         return $this->invoiceTypeCode;
     }
 
+    public function setProfileId($profileId)
+    {
+        $this->profileId = $profileId;
+        return $this;
+    }
+
     /**
      * @param string $invoiceTypeCode
      * @return Invoice
@@ -210,18 +269,13 @@ class Invoice implements XmlSerializable{
     }
 
     /**
-     * @return AdditionalDocumentReference
-     */
-    public function getAdditionalDocumentReference() {
-        return $this->additionalDocumentReference;
-    }
-
-    /**
-     * @param AdditionalDocumentReference $additionalDocumentReference
+     * @param string
+     * =
      * @return Invoice
      */
-    public function setAdditionalDocumentReference($additionalDocumentReference) {
-        $this->additionalDocumentReference = $additionalDocumentReference;
+    public function setCurrencyCode($currencyCode)
+    {
+        $this->currencyCode = $currencyCode;
         return $this;
     }
 
@@ -321,4 +375,28 @@ class Invoice implements XmlSerializable{
         return $this;
     }
 
+    public function setReceiverCustomerId($receiverCustomerId) {
+        $this->receiverCustomerId = $receiverCustomerId;
+        return $this;
+    }
+
+    public function setPaymentMeans($paymentMeans) {
+        $this->paymentMeans = $paymentMeans;
+        return $this;
+    }
+
+    public function setOrderReference($orderReference) {
+        $this->orderReference = $orderReference;
+        return $this;
+    }
+
+    public function setPaymentTerms($paymentTerms) {
+        $this->paymentTerms = $paymentTerms;
+        return $this;
+    }
+
+    public function setNote($note) {
+        $this->note = $note;
+        return $this;
+    }
 }

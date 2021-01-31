@@ -17,6 +17,7 @@ class Address implements XmlSerializable{
     private $buildingNumber;
     private $cityName;
     private $postalZone;
+    private $department;
     /**
      * @var Country
      */
@@ -70,6 +71,17 @@ class Address implements XmlSerializable{
         return $this;
     }
 
+
+    /**
+     * @param mixed $sdepartment
+     * @return Address
+     */
+    public function setDepartment($department) {
+        $this->department = $department;
+        return $this;
+    }
+
+
     /**
      * @return mixed
      */
@@ -102,7 +114,6 @@ class Address implements XmlSerializable{
         return $this;
     }
 
-
     /**
      * The xmlSerialize method is called during xml writing.
      *
@@ -114,12 +125,20 @@ class Address implements XmlSerializable{
         $cbc = '{urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2}';
         $cac = '{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}';
 
-        $writer->write([
-            Schema::CBC.'StreetName' => $this->streetName,
-            Schema::CBC.'BuildingNumber' => $this->buildingNumber,
-            Schema::CBC.'CityName' => $this->cityName,
-            Schema::CBC.'PostalZone' => $this->postalZone,
-            Schema::CAC.'Country' => $this->country,
-        ]);
+        $addressData = [];
+        if (!empty($this->department)) {
+            $addressData[Schema::CBC.'Department'] = $this->department;
+        }
+        if (!empty($this->streetName)) {
+            $addressData[Schema::CBC.'StreetName'] = $this->streetName;
+        }
+        if (!empty($this->buildingNumber)) {
+            $addressData[Schema::CBC.'BuildingNumber'] = $this->buildingNumber;
+        }
+        $addressData[Schema::CBC.'CityName'] = $this->cityName;
+        $addressData[Schema::CBC.'PostalZone'] = $this->postalZone;
+        $addressData[Schema::CAC.'Country'] = $this->country;
+
+        $writer->write($addressData);
     }
 }
