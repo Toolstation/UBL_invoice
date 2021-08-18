@@ -27,19 +27,19 @@ class Party implements XmlSerializable{
      */
     private $contact;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
     private $companyId;
 
-	/**
-	 * @var TaxScheme
-	 */
+    /**
+     * @var TaxScheme
+     */
     private $taxScheme;
 
-	/**
-	 * @var LegalEntity
-	 */
+    /**
+     * @var LegalEntity
+     */
     private $legalEntity;
 
     /**
@@ -79,50 +79,50 @@ class Party implements XmlSerializable{
         return $this;
     }
 
-	/**
-	 * @return string
-	 */
+    /**
+     * @return string
+     */
     public function getCompanyId() {
-    	return $this->companyId;
+        return $this->companyId;
     }
 
-	/**
-	 * @param string $companyId
-	 */
-	public function setCompanyId($companyId) {
-    	$this->companyId = $companyId;
-    	return $this;
-	}
+    /**
+     * @param string $companyId
+     */
+    public function setCompanyId($companyId) {
+        $this->companyId = $companyId;
+        return $this;
+    }
 
-	/**
-	 * @param TaxScheme $taxScheme.
-	 * @return mixed
-	 */
+    /**
+     * @param TaxScheme $taxScheme.
+     * @return mixed
+     */
     public function getTaxScheme() {
-    	return $this->taxScheme;
+        return $this->taxScheme;
     }
 
-	/**
-	 * @param TaxScheme $taxScheme
-	 */
+    /**
+     * @param TaxScheme $taxScheme
+     */
     public function setTaxScheme($taxScheme) {
-    	$this->taxScheme = $taxScheme;
+        $this->taxScheme = $taxScheme;
     }
 
-	/**
-	 * @return LegalEntity
-	 */
+    /**
+     * @return LegalEntity
+     */
     public function getLegalEntity() {
-    	return $this->legalEntity;
+        return $this->legalEntity;
     }
 
-	/**
-	 * @param $legalEntity
-	 * @return Party
-	 */
+    /**
+     * @param $legalEntity
+     * @return Party
+     */
     public function setLegalEntity($legalEntity) {
-    	$this->legalEntity = $legalEntity;
-    	return $this;
+        $this->legalEntity = $legalEntity;
+        return $this;
     }
 
     /**
@@ -173,20 +173,16 @@ class Party implements XmlSerializable{
     }
 
     function xmlSerialize(Writer $writer) {
+
         $writer->write([
             Schema::CAC.'PartyName' => [
                 Schema::CBC.'Name' => $this->name
             ],
+            Schema::CAC.'Language' => [
+                Schema::CBC.'ID' => $this->language
+            ],
             Schema::CAC.'PostalAddress' => $this->postalAddress
         ]);
-
-        if ($this->language) {
-            $writer->write([
-                Schema::CAC.'Language' => [
-                    Schema::CBC.'ID' => $this->language
-                ],
-            ]);
-        }
 
         if($this->taxScheme){
             $writer->write([
@@ -199,7 +195,7 @@ class Party implements XmlSerializable{
 
         if($this->physicalLocation){
             $writer->write([
-               Schema::CAC.'PhysicalLocation' => [Schema::CAC.'Address' => $this->physicalLocation]
+                Schema::CAC.'PhysicalLocation' => [Schema::CAC.'Address' => $this->physicalLocation]
             ]);
         }
 
