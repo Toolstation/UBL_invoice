@@ -16,6 +16,7 @@ class Contact implements XmlSerializable {
     private $telephone;
     private $telefax;
     private $electronicMail;
+    private $contactName;
 
     /**
      * @return mixed
@@ -57,6 +58,15 @@ class Contact implements XmlSerializable {
     }
 
     /**
+     * @param mixed $contactName
+     * @return Contact
+     */
+    public function setContactName($contactName) {
+        $this->contactName = $contactName;
+        return $this;
+    }
+
+    /**
      * @param mixed $electronicMail
      * @return Contact
      */
@@ -73,6 +83,12 @@ class Contact implements XmlSerializable {
      */
     function xmlSerialize(Writer $writer) {
         // TODO: Implement xmlSerialize() method.
+        if(!empty($this->contactName)) {
+            $writer->write([
+                Schema::CBC . 'Name' => $this->contactName
+            ]);
+        }
+
         if(!empty($this->telephone)) {
             $writer->write([
                 Schema::CBC . 'Telephone' => $this->telephone
