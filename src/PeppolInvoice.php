@@ -140,7 +140,6 @@ class PeppolInvoice implements XmlSerializable{
             $cbc . 'CustomizationID' => self::UBL_CUSTOM_ID,
             $cbc . 'ProfileID' => $this->profileId,
             $cbc . 'ID' => $this->id,
-            $cbc . 'CopyIndicator' => $this->copyIndicator ? 'true' : 'false',
             $cbc . 'IssueDate' => $this->issueDate->format('Y-m-d'),
             $cbc . 'InvoiceTypeCode' => $this->invoiceTypeCode,
             $cbc . 'Note' => $this->note,
