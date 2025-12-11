@@ -13,7 +13,7 @@ use Sabre\Xml\Service;
 class Generator {
     public static $currencyID;
 
-    public static function invoice(Invoice $invoice, $currencyId = 'EUR') {
+    public static function invoice($invoice, $currencyId = 'EUR') {
         self::$currencyID = $currencyId;
 
         $xmlService = new Service();
