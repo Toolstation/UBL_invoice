@@ -45,9 +45,11 @@ class Country implements  XmlSerializable {
      */
     function xmlSerialize(Writer $writer) {
         $writer->write([
-            Schema::CBC.'IdentificationCode' => $this->identificationCode,
-            Schema::CBC.'Name' => $this->name,
+            Schema::CBC.'IdentificationCode' => $this->identificationCode
         ]);
+
+
+
     }
 
 

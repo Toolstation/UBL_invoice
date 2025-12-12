@@ -186,11 +186,16 @@ class Party implements XmlSerializable{
             Schema::CAC.'PartyName' => [
                 Schema::CBC.'Name' => $this->name
             ],
-            Schema::CAC.'Language' => [
-                Schema::CBC.'ID' => $this->language
-            ],
             Schema::CAC.'PostalAddress' => $this->postalAddress
         ]);
+
+        if($this->language){
+            $writer->write([
+                Schema::CAC.'Language' => [
+                    Schema::CBC.'ID' => $this->language
+                ]
+            ]);
+        }
 
         if($this->endpointId && $this->endpointIdScheme){
             $writer->write([
