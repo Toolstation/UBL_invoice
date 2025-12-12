@@ -156,7 +156,6 @@ class PeppolInvoice implements XmlSerializable{
             */
             $cac . 'AccountingSupplierParty' => [$cac . "Party" => $this->accountingSupplierParty],
             $cac . 'AccountingCustomerParty' => [
-                $cbc . "SupplierAssignedAccountID" => $this->receiverCustomerId,
                 $cac . "Party" => $this->accountingCustomerParty
             ],
             $cac . 'PaymentMeans' => $this->paymentMeans,
