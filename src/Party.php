@@ -46,6 +46,8 @@ class Party implements XmlSerializable{
      * @var Langage
      */
     private $language;
+    private $endpointId;
+    private $endpointIdScheme;
 
     /**
      * @return mixed
@@ -172,17 +174,40 @@ class Party implements XmlSerializable{
         return $this;
     }
 
+    public function setEndpointId($value, $scheme) {
+        $this->endpointId = $value;
+        $this->endpointIdScheme = $scheme;
+        return $this;
+    }
+
     function xmlSerialize(Writer $writer) {
 
         $writer->write([
             Schema::CAC.'PartyName' => [
                 Schema::CBC.'Name' => $this->name
             ],
-            Schema::CAC.'Language' => [
-                Schema::CBC.'ID' => $this->language
-            ],
             Schema::CAC.'PostalAddress' => $this->postalAddress
         ]);
+
+        if($this->language){
+            $writer->write([
+                Schema::CAC.'Language' => [
+                    Schema::CBC.'ID' => $this->language
+                ]
+            ]);
+        }
+
+        if($this->endpointId && $this->endpointIdScheme){
+            $writer->write([
+                [
+                    'name' => Schema::CBC.'EndpointID',
+                    'value' => $this->endpointId,
+                    'attributes' => [
+                        'schemeID' => $this->endpointIdScheme
+                    ]
+                ]
+            ]);
+        }
 
         if($this->taxScheme){
             $writer->write([
